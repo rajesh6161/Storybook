@@ -42,7 +42,10 @@ const adminPermissions = {
   },
   loading: false,
   isAdmin: true,
+  permissionSet: true,
+  userTypes: [],
 };
+
 export const UserPermissions = () => (
   <PermissionsUI defaultData={object("state", initialState)} />
 );
@@ -52,3 +55,6 @@ export const LoadingPermissions = () => (
 export const AdminPermissions = () => (
   <PermissionsUI defaultData={object("state", adminPermissions)} />
 );
+// export const SetPermissions = () => (
+//   <PermissionsUI defaultData={object("state", adminPermissions)} />
+// );

@@ -8,6 +8,11 @@ import { Skeleton, Alert, AlertTitle } from "@material-ui/lab";
 import { Button } from "@material-ui/core";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import Checkbox from "@material-ui/core/Checkbox";
 
@@ -28,23 +33,44 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     alignItems: "center",
   },
+  formControl: {
+    margin: theme.spacing(1),
+    width: 320,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export default function PermissionsUI(props) {
   const classes = useStyles();
   const initialState = props.defaultData;
-  const { isAdmin, checkbox_name } = props.defaultData;
+  const {
+    isAdmin,
+    checkbox_name,
+    permissionSet,
+    userTypes,
+  } = props.defaultData;
+
   const [state, setState] = useState(checkbox_name);
+  const [userType, setUserType] = useState("");
+
+  //push usertype from dropdown to coming state
+
+  isAdmin && userTypes.push(userType);
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
-  console.log(state);
+  const handleDropdownChange = (event) => {
+    setUserType(event.target.value);
+  };
+  console.log(userType);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        {isAdmin ? (
+        {permissionSet ? (
           <Alert severity="success">
             <strong>Changes have been saved successfully!</strong>
           </Alert>
@@ -54,7 +80,42 @@ export default function PermissionsUI(props) {
           Group Permissions
         </Typography>
 
-        <br />
+        {isAdmin ? (
+          <Grid container spacing={3} justify="center">
+            <Grid item>
+              <FormControl className={classes.formControl}>
+                <Select
+                  value={userType}
+                  onChange={handleDropdownChange}
+                  displayEmpty
+                  className={classes.selectEmpty}
+                  inputProps={{ "aria-label": "Without label" }}
+                >
+                  <MenuItem value="" disabled>
+                    Select User Type
+                  </MenuItem>
+                  <MenuItem value="Executive">Executive</MenuItem>
+                  <MenuItem value="PR Executive">PR Executive</MenuItem>
+                  <MenuItem value="Managers">Managers</MenuItem>
+                  <MenuItem value="Head Coordinators">
+                    Head Coordinators
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <Button
+                style={{ marginTop: "20px" }}
+                variant="contained"
+                color="primary"
+                disabled={!props.defaultData.isAdmin}
+              >
+                {isAdmin ? "Save" : "Edit"}
+              </Button>
+            </Grid>
+          </Grid>
+        ) : null}
+
         {props.defaultData.loading ? (
           <div>
             <Skeleton />
@@ -196,7 +257,7 @@ export default function PermissionsUI(props) {
             color="secondary"
             disabled={!props.defaultData.isAdmin}
           >
-            {isAdmin ? "Save" : "Edit"}
+            Edit
           </Button>
         </div>
       </Paper>
